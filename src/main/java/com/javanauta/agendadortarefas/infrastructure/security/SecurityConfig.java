@@ -35,6 +35,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
+                        //para informar o @ResponseStatus direto na exceção
+//                        .requestMatchers("/error").permitAll()
                         .anyRequest()
                         .authenticated()
                 )
