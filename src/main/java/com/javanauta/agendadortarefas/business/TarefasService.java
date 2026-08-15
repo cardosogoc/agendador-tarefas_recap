@@ -3,17 +3,13 @@ package com.javanauta.agendadortarefas.business;
 import com.javanauta.agendadortarefas.business.dto.TarefasDTO;
 import com.javanauta.agendadortarefas.business.mapper.TarefasMapper;
 import com.javanauta.agendadortarefas.business.mapper.TarefasMapperUpdate;
-import com.javanauta.agendadortarefas.infrastructure.exceptions.ResourceNotFoundException;
 import com.javanauta.agendadortarefas.infrastructure.entity.TarefasEntity;
 import com.javanauta.agendadortarefas.infrastructure.enums.StatusNotificacaoEnum;
+import com.javanauta.agendadortarefas.infrastructure.exceptions.ResourceNotFoundException;
 import com.javanauta.agendadortarefas.infrastructure.repository.TarefasRepository;
 import com.javanauta.agendadortarefas.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
