@@ -1,6 +1,6 @@
 package com.javanauta.agendadortarefas.business;
 
-import com.javanauta.agendadortarefas.business.dto.TarefasDTO;
+import com.javanauta.agendadortarefas.business.dto.TarefasRecord;
 import com.javanauta.agendadortarefas.business.mapper.TarefasMapper;
 import com.javanauta.agendadortarefas.business.mapper.TarefasMapperUpdate;
 import com.javanauta.agendadortarefas.infrastructure.entity.TarefasEntity;
@@ -23,27 +23,27 @@ public class TarefasService {
     private final TarefasMapperUpdate mapperUpdate;
     private final JwtUtil jwtUtil;
 
-    public TarefasDTO gravarTarefa(String token, TarefasDTO dto){
+    public TarefasRecord gravarTarefa(String token, TarefasRecord dto) {
         String email = jwtUtil.extrairEmailToken(token.substring(7));
 
-        dto.setEmailUsuario(email);
-        dto.setDataCriacao(LocalDateTime.now());
-        dto.setStatusNotificacaoEnum(StatusNotificacaoEnum.PENDENTE);
+        TarefasRecord dtoFinal = new TarefasRecord(
+                null, dto.nomeTarefa(), dto.descricao(), LocalDateTime.now(),
+                dto.dataEvento(), email,null, StatusNotificacaoEnum.PENDENTE);
 
-        TarefasEntity entity = mapper.paraTarefaEntity(dto);
+        TarefasEntity entity = mapper.paraTarefaEntity(dtoFinal);
         return mapper.paraTarefaDTO(repository.save(entity));
     }
 
-    public List<TarefasDTO> buscaTarefasAgendadasPorPeriodo
-            (LocalDateTime dataInicial, LocalDateTime dataFinal){
+    public List<TarefasRecord> buscaTarefasAgendadasPorPeriodo
+            (LocalDateTime dataInicial, LocalDateTime dataFinal) {
 
-        return mapper.paraListaTarefasDTO(repository.findByDataEventoBetween(dataInicial, dataFinal));
+        return mapper.paraListaTarefasRecord(repository.findByDataEventoBetweenAndStatusNotificacaoEnum(dataInicial, dataFinal, StatusNotificacaoEnum.PENDENTE));
     }
 
-    public List<TarefasDTO> buscarTarefasPorEmailUsuario(String token){
+    public List<TarefasRecord> buscarTarefasPorEmailUsuario(String token) {
         String emailUsuario = jwtUtil.extrairEmailToken(token.substring(7));
 
-        return mapper.paraListaTarefasDTO(repository.findByEmailUsuario(emailUsuario));
+        return mapper.paraListaTarefasRecord(repository.findByEmailUsuario(emailUsuario));
     }
 
     public void deletaTarefaPorID(String id) {
@@ -54,7 +54,7 @@ public class TarefasService {
         repository.delete(entity);
     }
 
-    public TarefasDTO alterarStatus(StatusNotificacaoEnum status, String id){
+    public TarefasRecord alterarStatus(StatusNotificacaoEnum status, String id) {
         TarefasEntity entity = repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Tarefa não encontrada" + id));
@@ -64,7 +64,7 @@ public class TarefasService {
         return mapper.paraTarefaDTO(tarefaStatusAtualizado);
     }
 
-    public TarefasDTO updateTarefa(TarefasDTO dto, String id){
+    public TarefasRecord updateTarefa(TarefasRecord dto, String id) {
         TarefasEntity entity = repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Tarefa não encontrada" + id));
