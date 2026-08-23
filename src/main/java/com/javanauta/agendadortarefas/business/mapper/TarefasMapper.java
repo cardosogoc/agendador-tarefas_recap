@@ -15,7 +15,7 @@ public interface TarefasMapper {
     @Mapping(source = "dataCriacao", target = "dataCriacao")
     TarefasEntity paraTarefaEntity(TarefasRecord dto);
 
-    TarefasRecord paraTarefaDTO(TarefasEntity entity);
+    TarefasRecord paraTarefaRecord(TarefasEntity entity);
 
     List<TarefasEntity> paraListaTarefasEntity(List<TarefasRecord> dtos);
 

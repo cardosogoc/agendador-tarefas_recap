@@ -23,15 +23,15 @@ public class TarefasService {
     private final TarefasMapperUpdate mapperUpdate;
     private final JwtUtil jwtUtil;
 
-    public TarefasRecord gravarTarefa(String token, TarefasRecord dto) {
+    public TarefasRecord gravarTarefa(String token, TarefasRecord record) {
         String email = jwtUtil.extrairEmailToken(token.substring(7));
 
         TarefasRecord dtoFinal = new TarefasRecord(
-                null, dto.nomeTarefa(), dto.descricao(), LocalDateTime.now(),
-                dto.dataEvento(), email,null, StatusNotificacaoEnum.PENDENTE);
+                null, record.nomeTarefa(), record.descricao(), LocalDateTime.now(),
+                record.dataEvento(), email,null, StatusNotificacaoEnum.PENDENTE);
 
         TarefasEntity entity = mapper.paraTarefaEntity(dtoFinal);
-        return mapper.paraTarefaDTO(repository.save(entity));
+        return mapper.paraTarefaRecord(repository.save(entity));
     }
 
     public List<TarefasRecord> buscaTarefasAgendadasPorPeriodo
@@ -61,18 +61,18 @@ public class TarefasService {
 
         entity.setStatusNotificacaoEnum(status);
         TarefasEntity tarefaStatusAtualizado = repository.save(entity);
-        return mapper.paraTarefaDTO(tarefaStatusAtualizado);
+        return mapper.paraTarefaRecord(tarefaStatusAtualizado);
     }
 
-    public TarefasRecord updateTarefa(TarefasRecord dto, String id) {
+    public TarefasRecord updateTarefa(TarefasRecord record, String id) {
         TarefasEntity entity = repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Tarefa não encontrada" + id));
 
-        mapperUpdate.updateTarefas(dto, entity);
+        mapperUpdate.updateTarefas(record, entity);
 
         TarefasEntity tarefaAtualizada = repository.save(entity);
-        return mapper.paraTarefaDTO(tarefaAtualizada);
+        return mapper.paraTarefaRecord(tarefaAtualizada);
     }
 
 
